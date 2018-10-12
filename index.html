@@ -19,6 +19,8 @@
 				<p>
 					<span id="wordCount">0</span> Characters
 				</p>
+				
+				
 				&nbsp;
 				<button id="evaluate" class="btn btn-success btn-block">Evaluate</button>
 			</div>
@@ -42,11 +44,30 @@
 		
 		var myText = document.getElementById("bullet");
 		var wordCount = document.getElementById("wordCount");
+		var characters = '';
 
 		myText.addEventListener("keyup",function(){
-			var characters = myText.value.split('');
+			characters = myText.value;
 			wordCount.innerText = characters.length;
-		});
+			
+		}); 
+		
+		$("#evaluate").click(function(){
+			if (characters.length < 10) {
+				compared = "Too short";
+			} else if (characters.length < 20) {
+				compared = "Perfect";
+			} else {
+				compared = "Too long";
+				}
+				
+				console.log(compared);
+				
+				$("body .container").append('<div class="funny">' + compared + '</div>');
+        });
+		
+		
+		
 		
 	});
 </script>
