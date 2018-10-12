@@ -10,8 +10,19 @@
 		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
 	</head>
 	<body>
-		<div id="meme" class="funny">Doggo</div>
-		<button>Click Me</button>
+		<div class="container">
+			<div id="meme" class="funny">Doggo</div>
+			<button id="memeButton">Click Me</button>
+			<div class="form-group">
+				<label for="bullet">Bullet:</label>
+				<textarea class="form-control" rows="5" id="bullet"></textarea>
+				<p>
+					<span id="wordCount">0</span> Characters
+				</p>
+				&nbsp;
+				<button id="evaluate" class="btn btn-success btn-block">Evaluate</button>
+			</div>
+		</div>
 	</body>
 </html>
 
@@ -19,14 +30,23 @@
 	// when the page is fully loaded, start running the code
 	$(document).ready(function(){
 		// when any button is clicked, run the following code (defined by an anonymous function)
-		$("button").click(function(){
+		$("#memeButton").click(function(){
 			// set 'content' equal to the text within an element with the ID of 'meme'
 			// in this case, the element is a div
 			var content = $("#meme").text();
 			// log 'content' to the console. the console can be viewed by using 'inspect' in your browser while the page is running
 			console.log(content);
 			// create a new div element within the body element that contains the value of 'content'
-			$("body").append('<div class="funny">' + content + '</div>');
+			$("body .container").append('<div class="funny">' + content + '</div>');
 		});
+		
+		var myText = document.getElementById("bullet");
+		var wordCount = document.getElementById("wordCount");
+
+		myText.addEventListener("keyup",function(){
+			var characters = myText.value.split('');
+			wordCount.innerText = characters.length;
+		});
+		
 	});
 </script>
