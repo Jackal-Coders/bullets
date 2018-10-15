@@ -75,10 +75,16 @@
 		var wordCount = document.getElementById("wordCount");
 		var characters = '';
 
-		myText.addEventListener("keyup", function(){
+		myText.addEventListener("keyup",function(){
 			characters = myText.value;
 			wordCount.innerText = characters.length;
-			
+			if (characters.length < 10) {
+			 lengthCheck.innerText = "Too short";
+			} else if (characters.length < 20) {
+				lengthCheck.innerText = "Perfect";
+			} else {
+				lengthCheck.innerText = "Too long";
+			}
 		}); 
 		
 		// checks if the length is short, long, or fine
