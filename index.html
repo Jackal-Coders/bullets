@@ -66,6 +66,74 @@
 		// when any button is clicked, run the following code (defined by an anonymous function)
 		$("#memeButton").click(function(){
 			// set 'content' equal to the text within an element with the ID of 'meme'
+			// in this case, the element is a div<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<!-- bootstrap css -->
+		<link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" />
+		<!-- jquery js -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<!-- bootstrap js -->
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
+	</head>
+	<body>
+		<div class="container">
+			<div id="meme" class="funny">Doggo</div>
+			<button id="memeButton">Click Me</button>
+			<div class="form-group">
+
+				<label for="bullet">Bullet:</label>
+				<textarea id="bullet" class="form-control" rows="5"></textarea>
+
+				<div class="container">
+					<div class="row">
+
+						<!-- column that holds a dropdown for the bullet type and the character counter -->
+						<div id="col1" class="col-sm">
+							
+							<label for="type">Type:</label>
+							<select id="type">
+								<option value="epr">EPR</option>
+								<option value="award">Award</option>
+							</select>
+							
+							<p>
+								<span id="wordCount">0</span> Characters
+							</p>
+
+						</div>
+
+						<!-- column that holds the feedback for the user regarding the length of their bullet -->
+						<div id="col2" class="col-sm">
+							<p>
+								</br>Length Check: <span id="lengthCheck">Too short</span>
+							</p>
+						</div>
+
+					</div>
+				</div>
+				
+				<br />
+
+				<button id="evaluate" class="btn btn-success btn-block">Evaluate</button>
+
+			</div>
+		</div>
+	</body>
+</html>
+<style>
+#col2 {
+	text-align: right;
+}
+</style>
+<script>
+	// when the page is fully loaded, start running the code
+	$(document).ready(function(){
+
+		// when any button is clicked, run the following code (defined by an anonymous function)
+		$("#memeButton").click(function(){
+			// set 'content' equal to the text within an element with the ID of 'meme'
 			// in this case, the element is a div
 			var content = $("#meme").text();
 			// log 'content' to the console. the console can be viewed by using 'inspect' in your browser while the page is running
@@ -74,36 +142,24 @@
 			$("body .container").append('<div class="funny">' + content + '</div>');
 		});
 
-		// character counter
-		var myText = document.getElementById("bullet");
-		var wordCount = document.getElementById("wordCount");
+		// character counter & checks if the length is short, long, or fine
+		var lengthCheck = $("#lengthCheck");
+		var myText = $("#bullet");
+		var wordCount = $("#wordCount");
 		var characters = '';
 
 		myText.addEventListener("keyup",function(){
-			characters = myText.value;
-			wordCount.innerText = characters.length;
+			characters = myText.val();
+			wordCount.text(character.length);
+			
 			if (characters.length < 10) {
-			 lengthCheck.innerText = "Too short";
+				lengthCheck.text("Too short");
 			} else if (characters.length < 20) {
-				lengthCheck.innerText = "Perfect";
+				lengthCheck.text("Perfect");
 			} else {
-				lengthCheck.innerText = "Too long";
+				lengthCheck.text("Too long");
 			}
 		}); 
 		
-		// checks if the length is short, long, or fine
-		$("#evaluate").click(function(){
-			if (characters.length < 10) {
-				compared = "Too short";
-			} else if (characters.length < 20) {
-				compared = "Perfect";
-			} else {
-				compared = "Too long";
-			}
-			
-			console.log(compared);
-			
-			$("#col2").append('<div class="funny">' + compared + '</div>');
-        });
 	});
 </script>
