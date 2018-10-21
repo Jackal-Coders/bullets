@@ -77,7 +77,9 @@
 			$("body .container").append('<div class="funny">' + content + '</div>');
 		});
 
-		// character counter & checks if the length is short, long, or fine
+
+
+		// defines variables for length checking
 		var lengthCheck = $("#lengthCheck");
 		var myText = $("#bullet");
 		var wordCount = $("#wordCount");
@@ -86,6 +88,7 @@
 		var min;
 		var max;
 		
+		// notifies the user if their bullet is the proper length (within a min and max)
 		function updateLengthCheck(){
 			if (characters.length < min) {
 				lengthCheck.text("Too short");
@@ -98,7 +101,10 @@
 			}
 		}
 		
+		// code that runs when the user selects a bullet type goes here
 		dropType.on("change", function() {
+			
+			// changes min and max values for the length checker based on bullet type
 			if (dropType.val() == "epr"){
 				min = 113;
 				max = 118;
@@ -111,13 +117,24 @@
 			}
 			
 			updateLengthCheck();
+
 		});
 
+		// code that runs every time a key is pressed runs here
 		myText.on("keyup", function(){
+
+			// updates the character counter element to reflect the new length of the bullet
 			characters = myText.val();
 			wordCount.text(characters.length);
 			
 			updateLengthCheck();
+
 		});
+
+		// code that runs when the evaluate button is pressed goes here
+		$("#evaluate").click(function(){
+			// abbreviation replacement algorithm
+		});
+		
 	});
 </script>
