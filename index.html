@@ -133,7 +133,20 @@
 
 		// code that runs when the evaluate button is pressed goes here
 		$("#evaluate").click(function(){
-			// abbreviation replacement algorithm
+			var bulletArray = myText.val().split(' ');
+			var wordBankArray = Object.entries(wordBank);
+			
+			bulletArray.forEach(function(bulletWord, index) {
+				wordBankArray.forEach(function(wordBankEntry) {
+					if (wordBankEntry[0] == bulletWord) {
+						bulletArray[index] = wordBankEntry[1];
+					}
+				});
+			});
+			
+			var bulletNew = bulletArray.join(' ');
+			console.log(bulletNew);
+			myText.val(bulletNew);
 		});
 		
 	});
