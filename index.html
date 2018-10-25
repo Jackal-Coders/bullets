@@ -138,7 +138,7 @@
 			var bulletNew = myText.val();
 			
 			wordBankArray.forEach(function(wordBankEntry) {
-				bulletNew = bulletNew.replace(wordBankEntry[0], wordBankEntry[1]);
+				bulletNew = bulletNew.replace(new RegExp(wordBankEntry[0], 'gi'), wordBankEntry[1]);
 			});
 			
 			myText.val(bulletNew);
