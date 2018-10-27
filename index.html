@@ -51,9 +51,13 @@
 				<br />
 
 				<button id="evaluate" class="btn btn-success btn-block">Evaluate</button>
+				</br>
+				<button id="submitButton" class="btn btn-success btn-block">Submit</button>
 
 			</div>
+			<div class="submitClass"></div>
 		</div>
+		
 	</body>
 </html>
 <style>
@@ -75,6 +79,13 @@
 			console.log(content);
 			// create a new div element within the body element that contains the value of 'content'
 			$("body .container").append('<div class="funny">' + content + '</div>');
+		});
+		
+		$("#submitButton").click(function(){
+		
+			$("body .submitClass").append('<br />' + myText.val());
+			textAreaNew = undefined;
+			myText.val(textAreaNew);
 		});
 
 
