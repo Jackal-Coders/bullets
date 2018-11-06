@@ -81,15 +81,7 @@
 			$("body .container").append('<div class="funny">' + content + '</div>');
 		});
 		
-		$("#submitButton").click(function(){
 		
-			$("body .submitClass").append('<br />' + myText.val());
-			textAreaNew = undefined;
-			myText.val(textAreaNew);
-		});
-
-
-
 		// defines variables for length checking
 		var lengthCheck = $("#lengthCheck");
 		var myText = $("#bullet");
@@ -101,6 +93,7 @@
 		
 		// notifies the user if their bullet is the proper length (within a min and max)
 		function updateLengthCheck(){
+		
 			if (characters.length < min) {
 				lengthCheck.text("Too short");
 			} else if (characters.length <= max) {
@@ -110,6 +103,7 @@
 			} else {
 				lengthCheck.text("Select type");
 			}
+			
 		}
 		
 		// code that runs when the user selects a bullet type goes here
@@ -153,6 +147,16 @@
 			});
 			
 			myText.val(bulletNew);
+			
+		});
+		
+		$("#submitButton").click(function(){
+			
+			if (myText.val().trim().length !== 0) {
+				$("body .submitClass").append('<br />' + myText.val().trim());
+				textAreaNew = undefined;
+				myText.val(textAreaNew);
+			}
 			
 		});
 		
