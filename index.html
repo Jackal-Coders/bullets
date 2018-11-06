@@ -8,6 +8,7 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 		<!-- bootstrap js -->
 		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
+		<script src="wordBank.js"></script>
 	</head>
 	<body>
 		<div class="container">
@@ -50,9 +51,13 @@
 				<br />
 
 				<button id="evaluate" class="btn btn-success btn-block">Evaluate</button>
+				</br>
+				<button id="submitButton" class="btn btn-success btn-block">Submit</button>
 
 			</div>
+			<div class="submitClass"></div>
 		</div>
+		
 	</body>
 </html>
 <style>
@@ -75,8 +80,9 @@
 			// create a new div element within the body element that contains the value of 'content'
 			$("body .container").append('<div class="funny">' + content + '</div>');
 		});
-
-		// character counter & checks if the length is short, long, or fine
+		
+		
+		// defines variables for length checking
 		var lengthCheck = $("#lengthCheck");
 		var myText = $("#bullet");
 		var wordCount = $("#wordCount");
@@ -85,7 +91,9 @@
 		var min;
 		var max;
 		
+		// notifies the user if their bullet is the proper length (within a min and max)
 		function updateLengthCheck(){
+		
 			if (characters.length < min) {
 				lengthCheck.text("Too short");
 			} else if (characters.length <= max) {
@@ -95,9 +103,13 @@
 			} else {
 				lengthCheck.text("Select type");
 			}
+			
 		}
 		
+		// code that runs when the user selects a bullet type goes here
 		dropType.on("change", function() {
+			
+			// changes min and max values for the length checker based on bullet type
 			if (dropType.val() == "epr"){
 				min = 113;
 				max = 118;
@@ -110,13 +122,43 @@
 			}
 			
 			updateLengthCheck();
+
 		});
 
+		// code that runs every time a key is pressed runs here
 		myText.on("keyup", function(){
+
+			// updates the character counter element to reflect the new length of the bullet
 			characters = myText.val();
 			wordCount.text(characters.length);
 			
 			updateLengthCheck();
-		}); 
+
+		});
+
+		// code that runs when the evaluate button is pressed goes here
+		$("#evaluate").click(function(){
+		
+			var wordBankArray = Object.entries(wordBank);
+			var bulletNew = myText.val();
+			
+			wordBankArray.forEach(function(wordBankEntry) {
+				bulletNew = bulletNew.replace(new RegExp(wordBankEntry[0], 'gi'), wordBankEntry[1]);
+			});
+			
+			myText.val(bulletNew);
+			
+		});
+		
+		$("#submitButton").click(function(){
+			
+			if (myText.val().trim().length !== 0) {
+				$("body .submitClass").append('<br />' + myText.val().trim());
+				textAreaNew = undefined;
+				myText.val(textAreaNew);
+			}
+			
+		});
+		
 	});
 </script>
