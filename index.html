@@ -161,7 +161,13 @@
 			
 			// checks if the bullet starts with "- "
 			if(bulletNew.indexOf('- ') === 0){
-				// check for semicolons
+				// check for presence of 2 semicolons
+				var bulletSections = bulletNew.split(';');
+				if (bulletSections.length !== 3) {
+					$('#error').text('Bullet must contain 2 semicolons.');
+				} else {
+					$('#error').text('');
+				}
 			} else {
 				$('#error').text('Bullet must start with "- ".');
 			}
