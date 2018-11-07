@@ -9,50 +9,58 @@
 		<!-- bootstrap js -->
 		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
 		<script src="wordBank.js"></script>
+		<script src="dictionary.js"></script>
 	</head>
 	<body>
 		<div class="container">
-			<div id="meme" class="funny">Doggo</div>
-			<button id="memeButton">Click Me</button>
+			<!--<div id="meme" class="funny">Doggo</div>
+			<button id="memeButton">Click Me</button>-->
 			<div class="form-group">
+
+				<h2>Bullet Software v.1.0</h2>
 
 				<label for="bullet">Bullet:</label>
 				<textarea id="bullet" class="form-control" rows="5"></textarea>
 
-				<div class="container">
+				<div id="grid" class="container">
 					<div class="row">
 
 						<!-- column that holds a dropdown for the bullet type and the character counter -->
 						<div id="col1" class="col-sm">
-							
-							<label for="type">Type:</label>
-							<select id="type">
-								<option value="select">Select Type</option>
-								<option value="epr">EPR</option>
-								<option value="award">Award</option>
-							</select>
-							
-							<p>
-								<span id="wordCount">0</span> Characters
-							</p>
-
+							<!--<label for="type">Type:</label>-->
+							<div>
+								Type:<select id="type">
+									<option value="select">Select Type</option>
+									<option value="epr">EPR</option>
+									<option value="award">Award</option>
+								</select>
+								<br />
+							</div>
 						</div>
 
 						<!-- column that holds the feedback for the user regarding the length of their bullet -->
-						<div id="col2" class="col-sm">
-							<p>
-								</br>Length Check: <span id="lengthCheck">Select type</span>
-							</p>
+						<div class="col-sm col2">
+							<div>Length Check: <span id="lengthCheck">Select type</span></div>
+							<br />
 						</div>
 
+					</div>
+					<div class="row">
+						<div class="col-sm">
+							<p id="error"></p>
+						</div>
+						<div class="col-sm col2">
+							<div><span id="wordCount">0</span> Characters</div>
+						</div>
 					</div>
 				</div>
 				
 				<br />
 
-				<button id="evaluate" class="btn btn-success btn-block">Evaluate</button>
-				</br>
-				<button id="submitButton" class="btn btn-success btn-block">Submit</button>
+				<div class="btn-group d-flex" role="group">
+					<button id="evaluate" class="btn btn-primary w-100" type="button">Evaluate</button>
+					<button id="submitButton" class="btn btn-primary w-100" type="button">Submit</button>
+				</div>
 
 			</div>
 			<div class="submitClass"></div>
@@ -61,8 +69,17 @@
 	</body>
 </html>
 <style>
-#col2 {
+.col2 {
 	text-align: right;
+}
+#grid {
+	margin-top: 10px;
+}
+#evaluate {
+	background-color: #0069d9;
+}
+#evaluate:hover {
+	background-color: #024ebf;
 }
 </style>
 <script>
@@ -70,7 +87,7 @@
 	$(document).ready(function(){
 
 		// when any button is clicked, run the following code (defined by an anonymous function)
-		$("#memeButton").click(function(){
+		/*$("#memeButton").click(function(){
 			// set 'content' equal to the text within an element with the ID of 'meme'
 			// in this case, the element is a div<!DOCTYPE html>
 
@@ -79,7 +96,7 @@
 			console.log(content);
 			// create a new div element within the body element that contains the value of 'content'
 			$("body .container").append('<div class="funny">' + content + '</div>');
-		});
+		});*/
 		
 		
 		// defines variables for length checking
@@ -104,6 +121,26 @@
 				lengthCheck.text("Select type");
 			}
 			
+		}
+
+		function isVerb(word){
+			var verb = false;
+			var isTensed = false;
+			var dict = Object.keys(dictionary);
+
+			dict.forEach(function(term){
+				if(Array.isArray(dictionary[term])){
+					dictionary[term].forEach(function(altTerm, index){
+						if(word.toLowerCase() == altTerm.toLowerCase()){
+							if(index >= 2){
+								isTensed = true;
+							}
+						}
+					});
+				}
+			});
+
+			return isTensed;
 		}
 		
 		// code that runs when the user selects a bullet type goes here
@@ -149,6 +186,35 @@
 			
 			myText.val(bulletNew);
 			
+			// checks if the bullet starts with "- "
+			if(bulletNew.indexOf('- ') === 0){
+				// check for presence of 2 semicolons
+				var bulletSections = bulletNew.split(';');
+				if (bulletSections.length !== 3) {
+					$('#error').text('Bullet must contain 2 semicolons.');
+				} else {
+					var problem = false;
+					bulletSections[0] = bulletSections[0].slice(2, bulletSections[0].length);
+					bulletSections.forEach(function(section, index){
+						section = section.trim();
+
+						var firstWord = section.split(' ')[0];
+						if(!isVerb(firstWord) && !problem){
+							problem = true;
+							$('#error').text('Each bullet section must start with a PAST TENSE VERB. Section #' + (index + 1) + ' does not.');
+							$('#error').css('color', 'red');
+						}
+					});
+
+					if(!problem){
+						$('#error').text('Good job!');
+						$('#error').css('color', 'green');
+					}
+				}
+			} else {
+				$('#error').text('Bullet must start with "- ".');
+				$('#error').css('color', 'red');
+			}
 		});
 		
 		$("#submitButton").click(function(){
