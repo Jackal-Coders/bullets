@@ -19,32 +19,36 @@
 				<label for="bullet">Bullet:</label>
 				<textarea id="bullet" class="form-control" rows="5"></textarea>
 
-				<div class="container">
+				<div id="grid" class="container">
 					<div class="row">
 
 						<!-- column that holds a dropdown for the bullet type and the character counter -->
 						<div id="col1" class="col-sm">
-							
-							<label for="type">Type:</label>
-							<select id="type">
-								<option value="select">Select Type</option>
-								<option value="epr">EPR</option>
-								<option value="award">Award</option>
-							</select>
-							
-							<p>
-								<span id="wordCount">0</span> Characters
-							</p>
-
+							<!--<label for="type">Type:</label>-->
+							<div>
+								Type:<select id="type">
+									<option value="select">Select Type</option>
+									<option value="epr">EPR</option>
+									<option value="award">Award</option>
+								</select>
+								<br />
+							</div>
 						</div>
 
 						<!-- column that holds the feedback for the user regarding the length of their bullet -->
-						<div id="col2" class="col-sm">
-							<p>
-								</br>Length Check: <span id="lengthCheck">Select type</span>
-							</p>
+						<div class="col-sm col2">
+							<div>Length Check: <span id="lengthCheck">Select type</span></div>
+							<br />
 						</div>
 
+					</div>
+					<div class="row">
+						<div class="col-sm">
+							<p id="error"></p>
+						</div>
+						<div class="col-sm col2">
+							<div><span id="wordCount">0</span> Characters</div>
+						</div>
 					</div>
 				</div>
 				
@@ -61,8 +65,14 @@
 	</body>
 </html>
 <style>
-#col2 {
+.col2 {
 	text-align: right;
+}
+#error {
+	color: red;
+}
+#grid {
+	margin-top: 10px;
 }
 </style>
 <script>
@@ -149,6 +159,12 @@
 			
 			myText.val(bulletNew);
 			
+			// checks if the bullet starts with "- "
+			if(bulletNew.indexOf('- ') === 0){
+				// check for semicolons
+			} else {
+				$('#error').text('Bullet must start with "- ".');
+			}
 		});
 		
 		$("#submitButton").click(function(){
