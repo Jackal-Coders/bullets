@@ -9,12 +9,15 @@
 		<!-- bootstrap js -->
 		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
 		<script src="wordBank.js"></script>
+		<script src="dictionary.js"></script>
 	</head>
 	<body>
 		<div class="container">
-			<div id="meme" class="funny">Doggo</div>
-			<button id="memeButton">Click Me</button>
+			<!--<div id="meme" class="funny">Doggo</div>
+			<button id="memeButton">Click Me</button>-->
 			<div class="form-group">
+
+				<h2>Bullet Software v.1.0</h2>
 
 				<label for="bullet">Bullet:</label>
 				<textarea id="bullet" class="form-control" rows="5"></textarea>
@@ -54,9 +57,10 @@
 				
 				<br />
 
-				<button id="evaluate" class="btn btn-success btn-block">Evaluate</button>
-				</br>
-				<button id="submitButton" class="btn btn-success btn-block">Submit</button>
+				<div class="btn-group d-flex" role="group">
+					<button id="evaluate" class="btn btn-primary w-100" type="button">Evaluate</button>
+					<button id="submitButton" class="btn btn-primary w-100" type="button">Submit</button>
+				</div>
 
 			</div>
 			<div class="submitClass"></div>
@@ -68,11 +72,14 @@
 .col2 {
 	text-align: right;
 }
-#error {
-	color: red;
-}
 #grid {
 	margin-top: 10px;
+}
+#evaluate {
+	background-color: #0069d9;
+}
+#evaluate:hover {
+	background-color: #024ebf;
 }
 </style>
 <script>
@@ -80,7 +87,7 @@
 	$(document).ready(function(){
 
 		// when any button is clicked, run the following code (defined by an anonymous function)
-		$("#memeButton").click(function(){
+		/*$("#memeButton").click(function(){
 			// set 'content' equal to the text within an element with the ID of 'meme'
 			// in this case, the element is a div<!DOCTYPE html>
 
@@ -89,7 +96,7 @@
 			console.log(content);
 			// create a new div element within the body element that contains the value of 'content'
 			$("body .container").append('<div class="funny">' + content + '</div>');
-		});
+		});*/
 		
 		
 		// defines variables for length checking
@@ -114,6 +121,26 @@
 				lengthCheck.text("Select type");
 			}
 			
+		}
+
+		function isVerb(word){
+			var verb = false;
+			var isTensed = false;
+			var dict = Object.keys(dictionary);
+
+			dict.forEach(function(term){
+				if(Array.isArray(dictionary[term])){
+					dictionary[term].forEach(function(altTerm, index){
+						if(word.toLowerCase() == altTerm.toLowerCase()){
+							if(index >= 2){
+								isTensed = true;
+							}
+						}
+					});
+				}
+			});
+
+			return isTensed;
 		}
 		
 		// code that runs when the user selects a bullet type goes here
@@ -166,10 +193,27 @@
 				if (bulletSections.length !== 3) {
 					$('#error').text('Bullet must contain 2 semicolons.');
 				} else {
-					$('#error').text('');
+					var problem = false;
+					bulletSections[0] = bulletSections[0].slice(2, bulletSections[0].length);
+					bulletSections.forEach(function(section, index){
+						section = section.trim();
+
+						var firstWord = section.split(' ')[0];
+						if(!isVerb(firstWord) && !problem){
+							problem = true;
+							$('#error').text('Each bullet section must start with a PAST TENSE VERB. Section #' + (index + 1) + ' does not.');
+							$('#error').css('color', 'red');
+						}
+					});
+
+					if(!problem){
+						$('#error').text('Good job!');
+						$('#error').css('color', 'green');
+					}
 				}
 			} else {
 				$('#error').text('Bullet must start with "- ".');
+				$('#error').css('color', 'red');
 			}
 		});
 		
