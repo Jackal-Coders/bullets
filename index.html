@@ -85,19 +85,6 @@
 <script>
 	// when the page is fully loaded, start running the code
 	$(document).ready(function(){
-
-		// when any button is clicked, run the following code (defined by an anonymous function)
-		/*$("#memeButton").click(function(){
-			// set 'content' equal to the text within an element with the ID of 'meme'
-			// in this case, the element is a div<!DOCTYPE html>
-
-			var content = $("#meme").text();
-			// log 'content' to the console. the console can be viewed by using 'inspect' in your browser while the page is running
-			console.log(content);
-			// create a new div element within the body element that contains the value of 'content'
-			$("body .container").append('<div class="funny">' + content + '</div>');
-		});*/
-		
 		
 		// defines variables for length checking
 		var lengthCheck = $("#lengthCheck");
@@ -189,9 +176,10 @@
 			// checks if the bullet starts with "- "
 			if(bulletNew.indexOf('- ') === 0){
 				// check for presence of 2 semicolons
-				var bulletSections = bulletNew.split(';');
+				var bulletSections = bulletNew.split(/(?:;|--|\...)/);
 				if (bulletSections.length !== 3) {
-					$('#error').text('Bullet must contain 2 semicolons.');
+					$('#error').text('Bullet must contain 2 semicolons, double-dashes, elipses or some combination thereof.');
+					$('#error').css('color', 'red');
 				} else {
 					var problem = false;
 					bulletSections[0] = bulletSections[0].slice(2, bulletSections[0].length);
