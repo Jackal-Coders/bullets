@@ -13,11 +13,9 @@
 	</head>
 	<body>
 		<div class="container">
-			<!--<div id="meme" class="funny">Doggo</div>
-			<button id="memeButton">Click Me</button>-->
 			<div class="form-group">
 
-				<h2>Bullet Software v.1.0</h2>
+				<h2>Bullet Software v.1.1</h2>
 
 				<label for="bullet">Bullet:</label>
 				<textarea id="bullet" class="form-control" rows="5"></textarea>
@@ -144,7 +142,7 @@
 				min = undefined;
 				max = undefined;
 			}
-			
+
 			updateLengthCheck();
 
 		});
@@ -155,37 +153,41 @@
 			// updates the character counter element to reflect the new length of the bullet
 			characters = myText.val();
 			wordCount.text(characters.length);
-			
+
 			updateLengthCheck();
 
 		});
 
 		// code that runs when the evaluate button is pressed goes here
+		// this includes replacing words with abbreviations, checking that delimiters are present, etc
 		$("#evaluate").click(function(){
-		
+			
+			// automatically replaces words with abbreviations
 			var wordBankArray = Object.entries(wordBank);
 			var bulletNew = myText.val();
-			
 			wordBankArray.forEach(function(wordBankEntry) {
 				bulletNew = bulletNew.replace(new RegExp('\\b(?:' + wordBankEntry[0] + ')\\b', 'gi'), wordBankEntry[1]);
 				bulletNew = bulletNew.replace(new RegExp('\\b(?:' + (wordBankEntry[0] + 's') + ')\\b', 'gi'), wordBankEntry[1] + 's');
 			});
-			
 			myText.val(bulletNew);
 			
 			// checks if the bullet starts with "- "
 			if(bulletNew.indexOf('- ') === 0){
-				// check for presence of 2 semicolons
+
+				// check for presence of 2 delimiters
 				var bulletSections = bulletNew.split(/(?:;|--|\...)/);
 				if (bulletSections.length !== 3) {
-					$('#error').text('Bullet must contain 2 semicolons, double-dashes, elipses or some combination thereof.');
+					$('#error').text('Bullet must contain 2 semicolons, double-dashes, or elipses or some combination thereof.');
 					$('#error').css('color', 'red');
 				} else {
 					var problem = false;
+
+					// splits bullet into 3 sections
 					bulletSections[0] = bulletSections[0].slice(2, bulletSections[0].length);
+
+					// verifies that each section starts with a past tense verb
 					bulletSections.forEach(function(section, index){
 						section = section.trim();
-
 						var firstWord = section.split(' ')[0];
 						if(!isVerb(firstWord) && !problem){
 							problem = true;
@@ -193,27 +195,26 @@
 							$('#error').css('color', 'red');
 						}
 					});
-
 					if(!problem){
 						$('#error').text('Good job!');
 						$('#error').css('color', 'green');
 					}
 				}
+
 			} else {
 				$('#error').text('Bullet must start with "- ".');
 				$('#error').css('color', 'red');
 			}
 		});
 		
-		$("#submitButton").click(function(){
+		$("#submitButton").click(function(){	
 			
+			// cuts the bullet from the text box and pastes it down below so the user can type more bullets
 			if (myText.val().trim().length !== 0) {
 				$("body .submitClass").append('<br />' + myText.val().trim());
 				textAreaNew = undefined;
 				myText.val(textAreaNew);
 			}
-			
 		});
-		
 	});
 </script>
