@@ -162,6 +162,7 @@
 		// code that runs when the evaluate button is pressed goes here
 		// this includes replacing words with abbreviations, checking that delimiters are present, etc
 		$("#evaluate").click(function(){
+		
 			
 			// automatically replaces words with abbreviations
 			var wordBankArray = Object.entries(wordBank);
@@ -175,6 +176,16 @@
 			//auto adds "- " at the beginning of a bullet
 			
 			var bulletNewArray = bulletNew.split("");
+			/* if(bulletNew.indexOf('- ') !== 0) { 
+				console.log("false");
+				console.log(bulletNew);
+				bulletNew = "- " + bulletNew;
+				console.log(bulletNew);
+				myText.val(bulletNew); 
+			} else if (bulletNewArray[0] === "-" && bulletNewArray[1] !== " "){
+				bulletNew = bulletNewArray.splice(0, 1).join();
+				bulletNew = "- " + bulletNew;
+			} */
 			
 			if(bulletNew.trim().indexOf('-') !== 0) {
 				console.log(bulletNew)
@@ -190,10 +201,11 @@
 				myText.val(bulletNew);
 				console.log(bulletNew);
 			}
+				
 			
 			// checks if the bullet starts with "- "
 			if(bulletNew.indexOf('- ') === 0){
-
+				
 				// check for presence of 2 delimiters
 				var bulletSections = bulletNew.split(/(?:;|--|\...)/);
 				if (bulletSections.length !== 3) {
