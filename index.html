@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<title>Bullet Editor</title>
 		<meta charset="utf-8" />
 		<!-- bootstrap css -->
 		<link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" />
@@ -170,6 +171,25 @@
 				bulletNew = bulletNew.replace(new RegExp('\\b(?:' + (wordBankEntry[0] + 's') + ')\\b', 'gi'), wordBankEntry[1] + 's');
 			});
 			myText.val(bulletNew);
+			
+			//auto adds "- " at the beginning of a bullet
+			
+			var bulletNewArray = bulletNew.split("");
+			
+			if(bulletNew.trim().indexOf('-') !== 0) {
+				console.log(bulletNew)
+				console.log("No -");
+				bulletNew = "- " + bulletNew;
+				myText.val(bulletNew);
+			} else if (bulletNew.trim().indexOf('-') === 0 && bulletNewArray[1] !== " ") {
+				console.log(bulletNew)
+				console.log("- but no space");
+				bulletNew = bulletNewArray.shift();
+				bulletNew = bulletNewArray.join();
+				bulletNew = "- " + bulletNew;
+				myText.val(bulletNew);
+				console.log(bulletNew);
+			}
 			
 			// checks if the bullet starts with "- "
 			if(bulletNew.indexOf('- ') === 0){
