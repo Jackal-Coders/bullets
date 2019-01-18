@@ -209,11 +209,14 @@
 					bulletSections.forEach(function(section, index){
 						section = section.trim();
 						var firstWord = section.split(' ')[0];
+						
 						if(!isVerb(firstWord) && !problem){
 							problem = true;
 							$('#error').text('Each bullet section must start with a PAST TENSE VERB. Section #' + (index + 1) + ' does not.');
 							$('#error').css('color', 'red');
 						}
+						
+						//bulletSections[index] = ;
 					});
 					if(!problem){
 						$('#error').text('Good job!');
@@ -225,6 +228,17 @@
 				$('#error').text('Bullet must start with "- ".');
 				$('#error').css('color', 'red');
 			}
+			
+			// checks if all words in bullet are past tense verbs; if so, replaces -ed with -'d at the end to conserve space
+			var wordArray = bulletNew.split(' ');
+			for (i = 0; i < wordArray.length; i++) {
+				if(isVerb(wordArray[i])) {
+					wordArray[i] = wordArray[i].replace(/ed\b/gi, '\'d');
+				}
+			}
+			
+			// sets the bullet value to the bullet with altered endings
+			myText.val(wordArray.join(' '));
 		});
 		
 		$("#submitButton").click(function(){	
