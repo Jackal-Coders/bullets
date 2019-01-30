@@ -11,6 +11,7 @@
 		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
 		<script src="wordBank.js"></script>
 		<script src="dictionary.js"></script>
+		<script src="wingSG.js"></script>
 		<script src='https://code.jquery.com/jquery-3.1.0.min.js'></script>
 	</head>
 	<body>
@@ -29,10 +30,16 @@
 						<div id="col1" class="col-sm">
 							<!--<label for="type">Type:</label>-->
 							<div>
-								Type:<select id="type">
+								Bullet Type:<select id="type">
 									<option value="select">Select Type</option>
 									<option value="epr">EPR</option>
 									<option value="award">Award</option>
+								</select>
+								
+								Style Guide:<select id="sg">
+									<option value="select">Select Type</option>
+									<option value="als">ALS</option>
+									<option value="480W">480th ISRW</option>
 								</select>
 								<br />
 							</div>
@@ -132,6 +139,7 @@ ul {
 		var wordCount = $("#wordCount");
 		var characters = '';
 		var dropType = $("#type");
+		var dropSG = $("#sg");
 		var min;
 		var max;
 		
@@ -203,83 +211,109 @@ ul {
 		// code that runs when the evaluate button is pressed goes here
 		// this includes replacing words with abbreviations, checking that delimiters are present, etc
 		$("#evaluate").click(function(){
-			
-			// automatically replaces words with abbreviations
-			var wordBankArray = Object.entries(wordBank);
-			var bulletNew = myText.val();
-			wordBankArray.forEach(function(wordBankEntry) {
-				bulletNew = bulletNew.replace(new RegExp('\\b(?:' + wordBankEntry[0] + ')\\b', 'gi'), wordBankEntry[1]);
-				bulletNew = bulletNew.replace(new RegExp('\\b(?:' + (wordBankEntry[0] + 's') + ')\\b', 'gi'), wordBankEntry[1] + 's');
-			});
-			myText.val(bulletNew);
-			
-			//auto adds "- " at the beginning of a bullet
-			
-			var bulletNewArray = bulletNew.split("");
-			
-			if(bulletNew.trim().indexOf('-') !== 0) {
-				console.log(bulletNew)
-				console.log("No -");
-				bulletNew = "- " + bulletNew;
-				myText.val(bulletNew);
-			} else if (bulletNew.trim().indexOf('-') === 0 && bulletNewArray[1] !== " ") {
-				console.log(bulletNew)
-				console.log("- but no space");
-				bulletNew = bulletNewArray.shift();
-				bulletNew = bulletNewArray.join();
-				bulletNew = "- " + bulletNew;
-				myText.val(bulletNew);
-				console.log(bulletNew);
-			}
-			
-			// checks if the bullet starts with "- "
-			if(bulletNew.indexOf('- ') === 0){
-
-				// check for presence of 2 delimiters
-				var bulletSections = bulletNew.split(/(?:;|--|\...)/);
-				if (bulletSections.length !== 3) {
-					$('#error').text('Bullet must contain 2 semicolons, double-dashes, or elipses or some combination thereof.');
-					$('#error').css('color', 'red');
-				} else {
-					var problem = false;
-
-					// splits bullet into 3 sections
-					bulletSections[0] = bulletSections[0].slice(2, bulletSections[0].length);
-
-					// verifies that each section starts with a past tense verb
-					bulletSections.forEach(function(section, index){
-						section = section.trim();
-						var firstWord = section.split(' ')[0];
-						
-						if(!isVerb(firstWord) && !problem){
-							problem = true;
-							$('#error').text('Each bullet section must start with a PAST TENSE VERB. Section #' + (index + 1) + ' does not.');
-							$('#error').css('color', 'red');
-						}
-						
-						//bulletSections[index] = ;
+			try {
+				var bulletNew = myText.val();
+				
+				var bulletNewArray = bulletNew.split("");
+				
+				if(bulletNew.trim().indexOf('-') !== 0) {
+					console.log(bulletNew)
+					console.log("No -");
+					bulletNew = "- " + bulletNew;
+					myText.val(bulletNew);
+				} else if (bulletNew.trim().indexOf('-') === 0 && bulletNewArray[1] !== " ") {
+					console.log(bulletNew)
+					console.log("- but no space");
+					bulletNew = bulletNewArray.shift();
+					bulletNew = bulletNewArray.join();
+					bulletNew = "- " + bulletNew;
+					myText.val(bulletNew);
+					console.log(bulletNew);
+				}
+				
+				// automatically replaces words with abbreviations
+				if(dropSG.val() == "als"){
+					var wordBankArray = Object.entries(wordBank);
+					wordBankArray.forEach(function(wordBankEntry) {
+						bulletNew = bulletNew.replace(new RegExp('\\b(?:' + wordBankEntry[0] + ')\\b', 'gi'), wordBankEntry[1]);
+						bulletNew = bulletNew.replace(new RegExp('\\b(?:' + (wordBankEntry[0] + 's') + ')\\b', 'gi'), wordBankEntry[1] + 's');
 					});
-					if(!problem){
-						$('#error').text('Good job!');
-						$('#error').css('color', 'green');
+					myText.val(bulletNew);
+				} else if (dropSG.val() == "480W"){
+					var wingSGArray = Object.entries(wingStyleGuide);
+					wingSGArray.forEach(function(wingSGEntry) {
+						bulletNew = bulletNew.replace(new RegExp('\\b(?:' + wingSGEntry[0] + ')\\b', 'gi'), wingSGEntry[1]);
+						bulletNew = bulletNew.replace(new RegExp('\\b(?:' + (wingSGEntry[0] + 's') + ')\\b', 'gi'), wingSGEntry[1] + 's');
+					});
+					myText.val(bulletNew);
+				} else {
+					//$('#error').text('Select style guide.');
+					//$('#error').css('color', 'red');
+					
+					throw new Error('Select style guide.');
+				}
+				
+				//auto adds "- " at the beginning of a bullet
+				
+				
+				
+				// checks if the bullet starts with "- "
+				if(bulletNew.indexOf('- ') === 0){
+
+					// check for presence of 2 delimiters
+					var bulletSections = bulletNew.split(/(?:;|--|\...)/);
+					if (bulletSections.length !== 3) {
+						/*$('#error').text('Bullet must contain 2 semicolons, double-dashes, or elipses or some combination thereof.');
+						$('#error').css('color', 'red');*/
+						
+						throw new Error('Bullet must contain 2 semicolons, double-dashes, or elipses or some combination thereof.');
+					} else {
+						var problem = false;
+
+						// splits bullet into 3 sections
+						bulletSections[0] = bulletSections[0].slice(2, bulletSections[0].length);
+
+						// verifies that each section starts with a past tense verb
+						bulletSections.forEach(function(section, index){
+							section = section.trim();
+							var firstWord = section.split(' ')[0];
+							
+							if(!isVerb(firstWord) && !problem){
+								problem = true;
+								$('#error').text('Each bullet section must start with a PAST TENSE VERB. Section #' + (index + 1) + ' does not.');
+								$('#error').css('color', 'red');
+							}
+							
+							//bulletSections[index] = ;
+						});
+						if(!problem){
+							$('#error').text('Good job!');
+							$('#error').css('color', 'green');
+						}
+					}
+
+				} else {
+					/*$('#error').text('Bullet must start with "- ".');
+					$('#error').css('color', 'red');*/
+					
+					throw new Error('Bullet must start with "- ".');
+				}
+				
+				// checks if all words in bullet are past tense verbs; if so, replaces -ed with -'d at the end to conserve space
+				var wordArray = bulletNew.split(' ');
+				for (i = 0; i < wordArray.length; i++) {
+					if(isVerb(wordArray[i])) {
+						wordArray[i] = wordArray[i].replace(/ed\b/gi, '\'d');
 					}
 				}
-
-			} else {
-				$('#error').text('Bullet must start with "- ".');
+				
+				// sets the bullet value to the bullet with altered endings
+				myText.val(wordArray.join(' '));
+			}
+			catch(error){
+				$('#error').text(error.message);
 				$('#error').css('color', 'red');
 			}
-			
-			// checks if all words in bullet are past tense verbs; if so, replaces -ed with -'d at the end to conserve space
-			var wordArray = bulletNew.split(' ');
-			for (i = 0; i < wordArray.length; i++) {
-				if(isVerb(wordArray[i])) {
-					wordArray[i] = wordArray[i].replace(/ed\b/gi, '\'d');
-				}
-			}
-			
-			// sets the bullet value to the bullet with altered endings
-			myText.val(wordArray.join(' '));
 		});
 		
 		$("#submitButton").click(function(){	
