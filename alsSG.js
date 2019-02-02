@@ -1,4 +1,4 @@
-var wordBank = {
+var alsSG = {
     "abbreviation":"abbr",
     "academic":"acad",
     "academy":"acad",
