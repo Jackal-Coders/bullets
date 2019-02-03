@@ -178,6 +178,12 @@ ul {
 			});
 			return isTensed;
 		}
+
+		// unshortens -ed endings
+		function lengthenEndings(bullet){
+			bullet = bullet.replace(/\'d\b/gi, 'ed');
+			return bullet;
+		}
 		
 		// code that runs when the user selects a bullet type goes here
 		dropType.on("change", function() {
@@ -214,18 +220,13 @@ ul {
 				// auto-adds a "- " to the beginning of a bullet if one is not present
 				var bulletNewArray = bulletNew.split("");
 				if(bulletNew.trim().indexOf('-') !== 0) {
-					console.log(bulletNew)
-					console.log("No -");
 					bulletNew = "- " + bulletNew;
 					myText.val(bulletNew);
 				} else if (bulletNew.trim().indexOf('-') === 0 && bulletNewArray[1] !== " ") {
-					console.log(bulletNew)
-					console.log("- but no space");
 					bulletNew = bulletNewArray.shift();
 					bulletNew = bulletNewArray.join();
 					bulletNew = "- " + bulletNew;
 					myText.val(bulletNew);
-					console.log(bulletNew);
 				}
 				
 				// automatically replaces words with abbreviations
@@ -247,6 +248,11 @@ ul {
 					throw new Error('Select style guide.');
 				}
 				
+				// lengthens -ed endings in the event of multiple evaluations in a row
+				bulletNew = lengthenEndings(bulletNew);
+				//console.log(lengthenEndings(bulletNew));
+
+				// actual evaluation starts here
 				// checks if the bullet starts with "- "
 				if(bulletNew.indexOf('- ') === 0){
 
@@ -271,7 +277,6 @@ ul {
 						$('#error').text('Good job!');
 						$('#error').css('color', 'green');
 					}
-
 				} else {
 					throw new Error('Bullet must start with "- ".');
 				}
