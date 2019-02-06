@@ -151,9 +151,11 @@ ul {
 
 		// variables for reverse abbreviation
 		var caret,
+		lastCaret,
 		bullet,
 		length;
 		var abbrevs = [];
+		var lastLength = 0;
 		
 		// notifies the user if their bullet is the proper length (within a min and max)
 		function updateLengthCheck(){
@@ -410,16 +412,43 @@ ul {
 			updateCaret();
 
 			// get selection
+
+			lastCaret = caret;
 		});
 
-		$(document).on('keydown keyup', function(){
+		$(document).on('keydown', function(){
 			updateCaret();
 			bullet = myText.val();
 			console.log('length: ' + length);
 			if(length !== bullet.length){
 				length = bullet.length;
 
-				// update abbreviation list (check if it was altered)
+				// check if bullet changed
+				if(length !== lastLength){
+					// checks if abbreviations were altered; if so, they are removed; if not, they are updated
+
+					var newAbbrevs = [];
+					abbrevs.forEach(function(abbreviation){
+						
+						// updates index if they are typing in front of the current abbreviation
+						if(caret < abbreviation.index){
+							abbreviation.index++;
+							newAbbrevs.push(abbreviation);
+						}
+
+						// does nothing if they are typing after all abbreviations
+						else if(caret > (abbreviation.index + abbreviation.abbrev.length)){
+							newAbbrevs.push(abbreviation);
+						}
+					});
+					abbrevs = newAbbrevs;
+				}
+
+				lastLength = length;
+
+				lastCaret = caret;
+
+				console.log(abbrevs);
 			}
 		});
 		
