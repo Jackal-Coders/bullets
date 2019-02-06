@@ -12,6 +12,7 @@
 
 		<!-- bootstrap js -->
 		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
+		<script src="caret.js"></script>
 
 		<!-- dictionary used for determining if a word is a past tense verb -->
 		<script src="dictionary.js"></script>
@@ -144,8 +145,15 @@ ul {
 		var characters = '';
 		var dropType = $("#type");
 		var dropSG = $("#sg");
-		var min;
-		var max;
+		var lastSG,
+		min,
+		max;
+
+		// variables for reverse abbreviation
+		var caret,
+		bullet,
+		length;
+		var abbrevs = [];
 		
 		// notifies the user if their bullet is the proper length (within a min and max)
 		function updateLengthCheck(){
@@ -229,28 +237,11 @@ ul {
 					myText.val(bulletNew);
 				}
 				
-				// automatically replaces words with abbreviations
-				if(dropSG.val() == "als"){
-					var alsSGArray = Object.entries(alsSG);
-					alsSGArray.forEach(function(alsSGEntry) {
-						bulletNew = bulletNew.replace(new RegExp('\\b(?:' + alsSGEntry[0] + ')\\b', 'gi'), alsSGEntry[1]);
-						bulletNew = bulletNew.replace(new RegExp('\\b(?:' + (alsSGEntry[0] + 's') + ')\\b', 'gi'), alsSGEntry[1] + 's');
-					});
-					myText.val(bulletNew);
-				} else if (dropSG.val() == "480W"){
-					var wingSGArray = Object.entries(wingStyleGuide);
-					wingSGArray.forEach(function(wingSGEntry) {
-						bulletNew = bulletNew.replace(new RegExp('\\b(?:' + wingSGEntry[0] + ')\\b', 'gi'), wingSGEntry[1]);
-						bulletNew = bulletNew.replace(new RegExp('\\b(?:' + (wingSGEntry[0] + 's') + ')\\b', 'gi'), wingSGEntry[1] + 's');
-					});
-					myText.val(bulletNew);
-				} else {
-					throw new Error('Select style guide.');
-				}
-				
 				// lengthens -ed endings in the event of multiple evaluations in a row
 				bulletNew = lengthenEndings(bulletNew);
-				//console.log(lengthenEndings(bulletNew));
+
+				// unabbreviates bullet if its been abbreviated already (for the sake of making sure the first word in each section will be recognized as a valid word)
+				//bulletNew = unabbreviate(bulletNew);
 
 				// actual evaluation starts here
 				// checks if the bullet starts with "- "
@@ -265,7 +256,7 @@ ul {
 						// splits bullet into 3 sections
 						bulletSections[0] = bulletSections[0].slice(2, bulletSections[0].length);
 
-						// verifies that each section starts with a past tense verb
+						// checks that each section starts with a past tense verb
 						bulletSections.forEach(function(section, index){
 							section = section.trim();
 							var firstWord = section.split(' ')[0];
@@ -279,6 +270,52 @@ ul {
 					}
 				} else {
 					throw new Error('Bullet must start with "- ".');
+				}
+
+				// automatically replaces words with abbreviations
+				if(dropSG.val() == "als"){
+					console.log(bulletNew);
+					var alsSGArray = Object.entries(alsSG);
+
+					// loops through all words w/ abbreviations in the style guide
+					alsSGArray.forEach(function(alsSGEntry) {
+						var indices = getIndicesOf(alsSGEntry[0], bulletNew, false);
+						if(indices !== false){
+							console.log(indices);
+
+							// adds indices to abbrevs
+							indices.forEach(function(index){
+								abbrevs.push({
+									index: index,
+									word: alsSGEntry[0],
+									abbrev: alsSGEntry[1]
+								});
+							});
+
+							// checks if other indices will be impacted by this abbreviation
+
+							// fix potential conflicts by subtracting the difference between the original word and the abbreviation
+						}
+						bulletNew = bulletNew.replace(new RegExp('\\b(?:' + alsSGEntry[0] + ')', 'gi'), alsSGEntry[1]);
+						bulletNew = bulletNew.replace(new RegExp('\\b(?:' + (alsSGEntry[0] + 's') + ')', 'gi'), alsSGEntry[1] + 's');
+					});
+					myText.val(bulletNew);
+					console.log(abbrevs);
+
+					// sets the last study guide to ALS for unabbreviation purposes later
+					lastSG = alsSG;
+				} else if (dropSG.val() == "480W"){
+					var wingSGArray = Object.entries(wingStyleGuide);
+					wingSGArray.forEach(function(wingSGEntry) {
+						bulletNew = bulletNew.replace(new RegExp('\\b(?:' + wingSGEntry[0] + ')', 'gi'), wingSGEntry[1]);
+						bulletNew = bulletNew.replace(new RegExp('\\b(?:' + (wingSGEntry[0] + 's') + ')', 'gi'), wingSGEntry[1] + 's');
+					});
+					myText.val(bulletNew);
+
+					// sets the last study guide to 480th ISRW for unabbreviation purposes later
+					lastSG = wingStyleGuide;
+				} else {
+					throw new Error('Select style guide.');
 				}
 				
 				// checks if all words in bullet are past tense verbs; if so, replaces -ed with -'d at the end to conserve space
@@ -305,6 +342,77 @@ ul {
 				$("body .submitClass").append('<br />' + myText.val().trim());
 				textAreaNew = undefined;
 				myText.val(textAreaNew);
+			}
+		});
+
+		// unabbreviates all words in a string according to a study guide
+		function unabbreviate(bullet){
+			if(lastSG !== undefined){
+				console.log(lastSG);
+
+				// loops through studyGuide replacing all abbreviations w/ their respective words
+				var styleGuideArray = Object.entries(lastSG);
+				styleGuideArray.forEach(function(styleGuideEntry) {
+					//bullet = bullet.replace(new RegExp('\\b(?:' + styleGuideEntry[1] + ')\\b', 'gi'), styleGuideEntry[0]);
+					//bullet = bullet.replace(new RegExp('\\b(?:' + (styleGuideEntry[1] + 's') + ')\\b', 'gi'), styleGuideEntry[0] + 's');
+					if(styleGuideEntry[1].length > 1){
+						bullet = bullet.replace(new RegExp(styleGuideEntry[1], 'g'), styleGuideEntry[0]);
+					}
+				});
+			}
+			console.log(bullet);
+			return bullet;
+		}
+
+		function getIndicesOf(searchStr, str, caseSensitive) {
+			var searchStrLen = searchStr.length;
+			if (searchStrLen == 0) {
+				return false;
+			}
+			var startIndex = 0, index, indices = [];
+			if (!caseSensitive) {
+				str = str.toLowerCase();
+				searchStr = searchStr.toLowerCase();
+			}
+			while ((index = str.indexOf(searchStr, startIndex)) > -1) {
+				indices.push(index);
+				startIndex = index + searchStrLen;
+			}
+			if(indices.length > 0){
+				return indices;
+			}
+			else {
+				return false;
+			}
+		}
+
+		function updateCaret(){
+			if($('#bullet').is(':focus')){
+
+				//console.log('textbox caret: ' + $('#bullet').caret());
+				//console.log('hl caret: ' + $('.hl').caret());
+				caret = $('#bullet').caret();
+			}
+			else{
+				caret = undefined;
+			}
+			console.log('caret: ' + caret);
+		}
+
+		$(document).on('mouseup', function(){
+			updateCaret();
+
+			// get selection
+		});
+
+		$(document).on('keydown keyup', function(){
+			updateCaret();
+			bullet = myText.val();
+			console.log('length: ' + length);
+			if(length !== bullet.length){
+				length = bullet.length;
+
+				// update abbreviation list (check if it was altered)
 			}
 		});
 		
