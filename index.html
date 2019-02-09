@@ -277,12 +277,12 @@ ul {
 				// automatically replaces words with abbreviations
 				if(dropSG.val() == "als"){
 					console.log(bulletNew);
-					var alsSGArray = Object.entries(alsSG);
+					var alsSGArray = Object.keys(alsSG);
 
 					// loops through all words w/ abbreviations in the style guide
 					// loops in reverse order to prevent unintended replacements of short words
-					alsSGArray.reverse().forEach(function(alsSGEntry) {
-						var indices = getIndicesOf(alsSGEntry[0], bulletNew, false);
+					alsSGArray.reverse().forEach(function(word) {
+						var indices = getIndicesOf(word, bulletNew, false);
 						if(indices !== false){
 							console.log(indices);
 
@@ -291,8 +291,8 @@ ul {
 								// adds indices to abbrevs
 								abbrevs.push({
 									index: index,
-									word: alsSGEntry[0],
-									abbrev: alsSGEntry[1]
+									word: word,
+									abbrev: alsSG[word]
 								});
 
 								abbrevs.forEach(function(abbreviation){
@@ -301,13 +301,13 @@ ul {
 									if(abbreviation.index > index){
 
 										// fix potential conflicts by subtracting the difference between the original word and the abbreviation
-										abbreviation.index = abbreviation.index - (alsSGEntry[0].length - alsSGEntry[1].length);
+										abbreviation.index = abbreviation.index - (word.length - alsSG[word].length);
 									}
 								});
 							});
 						}
-						bulletNew = bulletNew.replace(new RegExp('\\b(?:' + alsSGEntry[0] + ')', 'gi'), alsSGEntry[1]);
-						bulletNew = bulletNew.replace(new RegExp('\\b(?:' + (alsSGEntry[0] + 's') + ')', 'gi'), alsSGEntry[1] + 's');
+						bulletNew = bulletNew.replace(new RegExp('\\b(?:' + word + ')', 'gi'), alsSG[word]);
+						bulletNew = bulletNew.replace(new RegExp('\\b(?:' + (word + 's') + ')', 'gi'), alsSG[word] + 's');
 					});
 					myText.val(bulletNew);
 					console.log(abbrevs);
