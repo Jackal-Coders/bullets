@@ -280,7 +280,8 @@ ul {
 					var alsSGArray = Object.entries(alsSG);
 
 					// loops through all words w/ abbreviations in the style guide
-					alsSGArray.forEach(function(alsSGEntry) {
+					// loops in reverse order to prevent unintended replacements of short words
+					alsSGArray.reverse().forEach(function(alsSGEntry) {
 						var indices = getIndicesOf(alsSGEntry[0], bulletNew, false);
 						if(indices !== false){
 							console.log(indices);
@@ -420,6 +421,9 @@ ul {
 			updateCaret();
 			bullet = myText.val();
 			console.log('length: ' + length);
+			if(length === 0){
+				abbrevs = [];
+			}
 			if(length !== bullet.length){
 				length = bullet.length;
 
