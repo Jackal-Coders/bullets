@@ -75,17 +75,6 @@
 					<button id="evaluate" class="btn btn-primary w-100" type="button">Evaluate</button>
 					<button id="submitButton" class="btn btn-primary w-100" type="button">Submit</button>
 				</div>
-
-				<!-- bullet examples -->
-				<!--<div class='bulletExamples'>
-					<ul class='bulletExamples'>
-					  <li>- Conducted 20 technical evals; ID'ed 10 trng shortfalls--sustained 98% up-time rate on $120M PACAF systems</li>
-					  <li>- Conducted 168 insps/26 personal evals; ensured effective/safe mx practices across Gp--spt'd 25K fly hr pgm</li>
-					  <li>- Participated w/sqdn Combat Dining In; helped set-up/tear down for event--fostered team work/esprit de corps</li>
-					  <li>- True advocate of Team Moody; key member of base womens softball team...exemplifies whole person concept</li>
-					</ul>
-				</div>
-				<button id="examplesButton" type="button" width="60px" height="100px">Bullet Examples</button>-->
 			</div>
 			
 			<!-- container for "submitted" bullets -->
@@ -251,7 +240,6 @@ ul {
 				//console.log(lengthenEndings(bulletNew));
 
 				// actual evaluation starts here
-
 				// check for presence of 2 delimiters
 				var bulletSections = bulletNew.split(/(?:;|--|\...)/);
 				if (bulletSections.length !== 3) {
@@ -300,13 +288,5 @@ ul {
 				myText.val(textAreaNew);
 			}
 		});
-		
-		//Hides examples of bullets
-		/*$('.bulletExamples').hide();
-		
-		//Bullet Examples Button
-		$("#examplesButton").click(function(){
-			$('.bulletExamples').slideToggle(500,"linear");
-		});*/
 	});
 </script>
