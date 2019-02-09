@@ -146,6 +146,7 @@ ul {
 		var dropSG = $("#sg");
 		var min;
 		var max;
+		var sGArray;
 		
 		// notifies the user if their bullet is the proper length (within a min and max)
 		function updateLengthCheck(){
@@ -181,8 +182,15 @@ ul {
 
 		// unshortens -ed endings
 		function lengthenEndings(bullet){
-			bullet = bullet.replace(/\'d\b/gi, 'ed');
-			return bullet;
+			return bullet.replace(/\'d\b/gi, 'ed');
+		}
+		
+		//function that counts the amount of characters in myText
+		function characterCount() {
+			wordCount.text(myText.val().length);
+			updateLengthCheck();
+			
+			$('#error').text('');
 		}
 		
 		// code that runs when the user selects a bullet type goes here
@@ -203,13 +211,7 @@ ul {
 		});
 
 		// code that runs every time a key is pressed runs here
-		myText.on("keyup", function(){
-
-			// updates the character counter element to reflect the new length of the bullet
-			characters = myText.val();
-			wordCount.text(characters.length);
-			updateLengthCheck();
-		});
+		myText.on("keyup", characterCount);
 
 		// code that runs when the evaluate button is pressed goes here
 		// this includes replacing words with abbreviations, checking that delimiters are present, etc
@@ -231,54 +233,45 @@ ul {
 				
 				// automatically replaces words with abbreviations
 				if(dropSG.val() == "als"){
-					var alsSGArray = Object.entries(alsSG);
-					alsSGArray.forEach(function(alsSGEntry) {
-						bulletNew = bulletNew.replace(new RegExp('\\b(?:' + alsSGEntry[0] + ')\\b', 'gi'), alsSGEntry[1]);
-						bulletNew = bulletNew.replace(new RegExp('\\b(?:' + (alsSGEntry[0] + 's') + ')\\b', 'gi'), alsSGEntry[1] + 's');
-					});
-					myText.val(bulletNew);
+					sGArray = Object.entries(alsSG);
 				} else if (dropSG.val() == "480W"){
-					var wingSGArray = Object.entries(wingStyleGuide);
-					wingSGArray.forEach(function(wingSGEntry) {
-						bulletNew = bulletNew.replace(new RegExp('\\b(?:' + wingSGEntry[0] + ')\\b', 'gi'), wingSGEntry[1]);
-						bulletNew = bulletNew.replace(new RegExp('\\b(?:' + (wingSGEntry[0] + 's') + ')\\b', 'gi'), wingSGEntry[1] + 's');
-					});
-					myText.val(bulletNew);
+					sGArray = Object.entries(wingStyleGuide);
 				} else {
 					throw new Error('Select style guide.');
 				}
+				sGArray.forEach(function(sGEntry) {
+					bulletNew = bulletNew.replace(new RegExp('\\b(?:' + sGEntry[0] + ')\\b', 'gi'), sGEntry[1]);
+					bulletNew = bulletNew.replace(new RegExp('\\b(?:' + (sGEntry[0] + 's') + ')\\b', 'gi'), sGEntry[1] + 's');
+				});
+				characterCount();
+				myText.val(bulletNew);
 				
 				// lengthens -ed endings in the event of multiple evaluations in a row
 				bulletNew = lengthenEndings(bulletNew);
 				//console.log(lengthenEndings(bulletNew));
 
 				// actual evaluation starts here
-				// checks if the bullet starts with "- "
-				if(bulletNew.indexOf('- ') === 0){
 
-					// check for presence of 2 delimiters
-					var bulletSections = bulletNew.split(/(?:;|--|\...)/);
-					if (bulletSections.length !== 3) {
-						throw new Error('Bullet must contain 2 semicolons, double-dashes, or elipses or some combination thereof.');
-					} else {
-
-						// splits bullet into 3 sections
-						bulletSections[0] = bulletSections[0].slice(2, bulletSections[0].length);
-
-						// verifies that each section starts with a past tense verb
-						bulletSections.forEach(function(section, index){
-							section = section.trim();
-							var firstWord = section.split(' ')[0];
-							
-							if(!isVerb(firstWord)){
-								throw new Error('Each bullet section must start with a PAST TENSE VERB. Section #' + (index + 1) + ' does not.');
-							}
-						});
-						$('#error').text('Good job!');
-						$('#error').css('color', 'green');
-					}
+				// check for presence of 2 delimiters
+				var bulletSections = bulletNew.split(/(?:;|--|\...)/);
+				if (bulletSections.length !== 3) {
+					throw new Error('Bullet must contain 2 semicolons, double-dashes, or elipses or some combination thereof.');
 				} else {
-					throw new Error('Bullet must start with "- ".');
+
+					// splits bullet into 3 sections
+					bulletSections[0] = bulletSections[0].slice(2, bulletSections[0].length);
+
+					// verifies that each section starts with a past tense verb
+					bulletSections.forEach(function(section, index){
+						section = section.trim();
+						var firstWord = section.split(' ')[0];
+						
+						if(!isVerb(firstWord)){
+							throw new Error('Each bullet section must start with a PAST TENSE VERB. Section #' + (index + 1) + ' does not.');
+						}
+					});
+					$('#error').text('Good job!');
+					$('#error').css('color', 'green');
 				}
 				
 				// checks if all words in bullet are past tense verbs; if so, replaces -ed with -'d at the end to conserve space
