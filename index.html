@@ -180,8 +180,7 @@ ul {
 
 		// unshortens -ed endings
 		function lengthenEndings(bullet){
-			bullet = bullet.replace(/\'d\b/gi, 'ed');
-			return bullet;
+			return bullet.replace(/\'d\b/gi, 'ed');
 		}
 		
 		// code that runs when the user selects a bullet type goes here
@@ -214,18 +213,18 @@ ul {
 		// this includes replacing words with abbreviations, checking that delimiters are present, etc
 		$("#evaluate").click(function(){
 			try {
-				var bulletNew = myText.val();
+				var bulletNew = myText.val().trim();
 				
 				// auto-adds a "- " to the beginning of a bullet if one is not present
-				var bulletNewArray = bulletNew.split("");
+				var bulletNewArray = bulletNew.split('');
 				if(bulletNew.trim().indexOf('-') !== 0) {
-					bulletNew = "- " + bulletNew;
+					bulletNew = '- ' + bulletNew;
 					myText.val(bulletNew);
-				} else if (bulletNew.trim().indexOf('-') === 0 && bulletNewArray[1] !== " ") {
+				} else if (bulletNew.trim().indexOf('-') === 0 && bulletNewArray[1] !== ' ') {
 					bulletNew = bulletNewArray.shift();
-					bulletNew = bulletNewArray.join();
-					bulletNew = "- " + bulletNew;
-					myText.val(bulletNew);
+					bulletNew = bulletNewArray.join('');
+					bulletNew = '- ' + bulletNew;
+					myText.val(bulletNew.trim());
 				}
 				
 				// lengthens -ed endings in the event of multiple evaluations in a row
@@ -237,7 +236,6 @@ ul {
 				// actual evaluation starts here
 				// check for presence of 2 delimiters
 				var bulletSections = bulletNew.split(/(?:;|--|\.\.\.)/);
-				console.log(bulletSections);
 				if (bulletSections.length !== 3) {
 					throw new Error('Bullet must contain 2 semicolons, double-dashes, or elipses or some combination thereof.');
 				} else {
@@ -308,7 +306,6 @@ ul {
 					bulletNew = bulletNew.replace(new RegExp('\\b(?:' + word + ')', 'gi'), sg[word]);
 					bulletNew = bulletNew.replace(new RegExp('\\b(?:' + (word + 's') + ')', 'gi'), sg[word] + 's');
 				});
-				myText.val(bulletNew);
 				//console.log(abbrevs);
 				
 				// checks if all words in bullet are past tense verbs; if so, replaces -ed with -'d at the end to conserve space
@@ -382,7 +379,6 @@ ul {
 		function updateCaret(){
 			if($('#bullet').is(':focus')){
 
-				//console.log('textbox caret: ' + $('#bullet').caret());
 				//console.log('hl caret: ' + $('.hl').caret());
 				caret = $('#bullet').caret();
 			}
@@ -438,13 +434,5 @@ ul {
 				console.log(abbrevs);
 			}
 		});
-		
-		//Hides examples of bullets
-		/*$('.bulletExamples').hide();
-		
-		//Bullet Examples Button
-		$("#examplesButton").click(function(){
-			$('.bulletExamples').slideToggle(500,"linear");
-		});*/
 	});
 </script>
