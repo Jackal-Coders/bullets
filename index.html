@@ -307,6 +307,7 @@ ul {
 					bulletNew = bulletNew.replace(new RegExp('\\b(?:' + word + ')', 'gi'), sg[word]);
 					bulletNew = bulletNew.replace(new RegExp('\\b(?:' + (word + 's') + ')', 'gi'), sg[word] + 's');
 				});
+				lastLength = bulletNew.length;
 				console.log(abbrevs);
 				
 				// checks if all words in bullet are past tense verbs; if so, replaces -ed with -'d at the end to conserve space
@@ -401,12 +402,12 @@ ul {
 		$(document).on('keyup', function(){
 			updateCaret();
 			bullet = myText.val();
-			console.log('length: ' + length);
-			if(length === 0){
-				abbrevs = [];
-			}
+			console.log('last length: ' + lastLength);
 			if(length !== bullet.length){
 				length = bullet.length;
+				if(length === 0){
+					abbrevs = [];
+				}
 
 				// check if bullet changed
 				if(length !== lastLength){
@@ -417,7 +418,12 @@ ul {
 						
 						// updates index if they are typing in front of the current abbreviation
 						if(caret < abbreviation.index){
-							abbreviation.index++;
+							if(length < lastLength) {
+								abbreviation.index = abbreviation.index - (lastLength - length);
+							}
+							else {
+								abbreviation.index = abbreviation.index + (length - lastLength);
+							}
 							newAbbrevs.push(abbreviation);
 						}
 
