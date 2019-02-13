@@ -73,8 +73,9 @@
 
 				<!-- button panel -->
 				<div class="btn-group d-flex" role="group">
-					<button id="evaluate" class="btn btn-primary w-100" type="button">Evaluate</button>
-					<button id="submitButton" class="btn btn-primary w-100" type="button">Submit</button>
+					<button id="evaluate" class="btn btn-primary w-100 dark" type="button">Evaluate</button>
+					<button id="unabbreviate" class="btn btn-primary w-100" type="button">Unabbreviate</button>
+					<button id="submitButton" class="btn btn-primary w-100 dark" type="button">Submit</button>
 				</div>
 			</div>
 			
@@ -97,10 +98,10 @@
 #grid {
 	margin-top: 10px;
 }
-#evaluate {
+.dark {
 	background-color: #0069d9;
 }
-#evaluate:hover {
+.dark:hover {
 	background-color: #024ebf;
 }
 #examplesButton {
@@ -340,7 +341,7 @@ ul {
 
 		// unabbreviates all words in a string according to a study guide
 		function unabbreviate(bullet){
-			if(lastSG !== undefined){
+			/*if(lastSG !== undefined){
 				console.log(lastSG);
 
 				// loops through studyGuide replacing all abbreviations w/ their respective words
@@ -353,8 +354,19 @@ ul {
 					}
 				});
 			}
-			console.log(bullet);
+			console.log(bullet);*/
+			if(abbrevs.length > 0) {
+				// replace abbreviations w/ whole words
+				abbrevs.forEach(function(abbreviation){
+					bullet = bullet.substring(0, abbreviation.index) + abbreviation.word + bullet.substring((abbreviation.index + abbreviation.abbrev.length));
+				});
+				abbrevs = [];
+			}
+			else {
+				// try to figure out whats going on
+			}
 			return bullet;
+
 		}
 
 		function getIndicesOf(searchStr, str, caseSensitive) {
@@ -438,6 +450,12 @@ ul {
 				lastCaret = caret;
 				console.log(abbrevs);
 			}
+		});
+
+		$('#unabbreviate').click(function(){
+			var bullet = myText.val();
+			bullet = unabbreviate(bullet);
+			myText.val(bullet);
 		});
 	});
 </script>
