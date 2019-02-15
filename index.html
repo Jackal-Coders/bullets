@@ -357,8 +357,13 @@ ul {
 			console.log(bullet);*/
 			if(abbrevs.length > 0) {
 				// replace abbreviations w/ whole words
-				abbrevs.forEach(function(abbreviation){
+				abbrevs.forEach(function(abbreviation) {
 					bullet = bullet.substring(0, abbreviation.index) + abbreviation.word + bullet.substring((abbreviation.index + abbreviation.abbrev.length));
+					abbrevs.forEach(function(abbrev) {
+						if(abbrev.index > abbreviation.index){
+							abbrev.index += (abbreviation.word.length - abbreviation.abbrev.length);
+						}
+					});
 				});
 				abbrevs = [];
 			}
@@ -374,7 +379,9 @@ ul {
 			if(searchStrLen == 0) {
 				return false;
 			}
-			var startIndex = 0, index, indices = [];
+			var startIndex = 0, 
+			index, 
+			indices = [];
 			if(!caseSensitive) {
 				str = str.toLowerCase();
 				searchStr = searchStr.toLowerCase();
