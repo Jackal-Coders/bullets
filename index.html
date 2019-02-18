@@ -74,8 +74,8 @@
 				<!-- button panel -->
 				<div class="btn-group d-flex" role="group">
 					<button id="evaluate" class="btn btn-primary w-100 dark" type="button">Evaluate</button>
-					<button id="unabbreviate" class="btn btn-primary w-100" type="button">Unabbreviate</button>
-					<button id="submitButton" class="btn btn-primary w-100 dark" type="button">Submit</button>
+					<!--<button id="unabbreviate" class="btn btn-primary w-100" type="button">Unabbreviate</button>-->
+					<button id="submitButton" class="btn btn-primary w-100" type="button">Submit</button>
 				</div>
 			</div>
 			
@@ -315,7 +315,8 @@ ul {
 				var wordArray = bulletNew.split(' ');
 				//var wordArray = bulletNew.split(/(?:" "|\/)/);
 				for (i = 0; i < wordArray.length; i++) {
-					if(isVerb(wordArray[i])) {
+					//if(isVerb(wordArray[i])) {
+					if(wordArray[i].length > 3){
 						wordArray[i] = wordArray[i].replace(/ed\b/gi, '\'d');
 					}
 				}
