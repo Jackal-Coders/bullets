@@ -27,7 +27,9 @@
 	<body>
 		<div class="container">
 			<div class="form-group">
-				<h2>Bullet Software v.1.1</h2>
+				<h2>Bullet Editor v.1.1</h2>
+				<h5>Instructions:</h5>
+				<p>Type unabbreviated Air Force bullets in the textbox below. Click "Evaluate" to automatically abbreviate bullets and verify that they abide by Air Force standards. Use the dropdowns below the textbox to choose which standards to base the evaluation off of. Click "Submit" when you are finished editing your bullet(s) to copy them to the bottom of the page and clear the textbox.</p>
 				<label for="bullet">Bullet:</label>
 				<textarea id="bullet" class="form-control" rows="5"></textarea>
 				<div id="grid" class="container">
@@ -232,7 +234,10 @@ ul {
 				bulletNew = lengthenEndings(bulletNew);
 
 				// unabbreviates bullet if its been abbreviated already (for the sake of making sure the first word in each section will be recognized as a valid word)
+
+				// unabbreviate first word in each section of the bullet so it will be recognized as a past tense verb
 				//bulletNew = unabbreviate(bulletNew);
+				//console.log(bulletNew);
 
 				// actual evaluation starts here
 				// check for presence of 2 delimiters
