@@ -139,6 +139,7 @@ ul {
 		
 		// notifies the user if their bullet is the proper length (within a min and max)
 		function updateLengthCheck(){
+			characters = myText.val();
 			if (characters.length < min) {
 				lengthCheck.text("Too short");
 			} else if (characters.length <= max) {
