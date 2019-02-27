@@ -23,6 +23,9 @@
 		<!-- 480th ISRW style guide -->
 		<script src="wingSG.js"></script>
 		<!--<script src='https://code.jquery.com/jquery-3.1.0.min.js'></script>-->
+		
+		<!-- CSS Style Sheet -->
+		<link rel="stylesheet" type="text/css" href="styleSheet.css">
 	</head>
 	<body>
 		<div class="container">
@@ -86,46 +89,7 @@
 		</div>
 	</body>
 </html>
-<style>
-.bulletExamples {
-	height: 125px;
-	margin-top: 10px;
-}
-.drop{
-	margin: 5px;
-}
-.col2 {
-	text-align: right;
-}
-#grid {
-	margin-top: 10px;
-}
-.dark {
-	background-color: #0069d9;
-}
-.dark:hover {
-	background-color: #024ebf;
-}
-#examplesButton {
-	background-color: white;
-	color: blue;
-	border: 2px solid #FFFFFF; /* Green */
-	text-align: left;
-	margin: 4px 2px;
-}
-#examplesButton:hover {
-	background-color: white;
-	color: #1E90FF;
-	border: 2px solid #FFFFFF; /* Green */
-	text-align: left;
-	margin: 4px 2px;
-	cursor: pointer;
-}
-ul {
-	list-style: none;
-	padding: 0;
-}
-</style>
+
 <script>
 	// when the page is fully loaded, start running the code
 	$(document).ready(function(){
@@ -153,10 +117,13 @@ ul {
 		function updateLengthCheck(){
 			if (characters.length < min) {
 				lengthCheck.text("Too short");
+				$('#lengthCheck').css('color', 'crimson');
 			} else if (characters.length <= max) {
 				lengthCheck.text("Perfect");
+				$('#lengthCheck').css('color', 'green');
 			} else if (characters.length > max) {
 				lengthCheck.text("Too long");
+				$('#lengthCheck').css('color', 'crimson');
 			} else {
 				lengthCheck.text("Select type");
 			}
@@ -236,7 +203,7 @@ ul {
 				// unabbreviates bullet if its been abbreviated already (for the sake of making sure the first word in each section will be recognized as a valid word)
 
 				// unabbreviate first word in each section of the bullet so it will be recognized as a past tense verb
-				//bulletNew = unabbreviate(bulletNew);
+				bulletNew = unabbreviate(bulletNew);
 				//console.log(bulletNew);
 
 				// actual evaluation starts here
