@@ -208,9 +208,20 @@
 
 				// actual evaluation starts here
 				// check for presence of 2 delimiters
-				var bulletSections = bulletNew.split(/(?:;|--|\.\.\.)/);
+				
+				var bulletSections = bulletNew.split(/;/);
+				
+				if (bulletSections.length === 2) {
+					if (bulletSections[0].indexOf('--') > -1 || bulletSections[0].indexOf('...') > -1) {
+						throw new Error('Section #1 and #2 must be seperated by a semicolon and section #2 and #3 by an elipses or double-dash');
+					} else if (bulletSections[1].indexOf('--') > -1 || bulletSections[1].indexOf('...') > -1) {
+						bulletSections = bulletSections.concat(bulletSections[1].split(/(?:--|\.\.\.)/gi));
+						bulletSections.splice(1, 1);
+					} 
+				}
+				
 				if (bulletSections.length !== 3) {
-					throw new Error('Bullet must contain 2 semicolons, double-dashes, or elipses or some combination thereof.');
+					throw new Error('Section #1 and #2 must be seperated by a semicolon and section #2 and #3 by an elipses or double-dash'); 
 				} else {
 
 					// splits bullet into 3 sections
@@ -220,9 +231,8 @@
 					bulletSections.forEach(function(section, index){
 						section = section.trim();
 						var firstWord = section.split(' ')[0];
-						
 						if(!isVerb(firstWord)){
-							throw new Error('Each bullet section must start with a PAST TENSE VERB. Section #' + (index + 1) + ' does not.');
+							throw new Error('Each bullet section must start with a PAST TENSE VERB. The first word in Section #' + (index + 1) + ' was not recognized.');
 						}
 					});
 					$('#error').text('Good job!');
