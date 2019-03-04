@@ -270,7 +270,7 @@ var wingStyleGuide = {
 	"quarter":"qtr",
 	"rating":"rtg",
 	"ready":"rdy",
-	"recieved":"rcv'd",
+	"received":"rcv'd",
 	"reorganize":"reorg",
 	"report":"rpt",
 	"representative":"rep",

@@ -255,7 +255,7 @@
 				// check for presence of 2 delimiters
 				
 				var bulletSections = bulletNew.split(/;/);
-				var sectionError
+				var sectionError;
 				
 				if (bulletSections.length === 2) {
 					if (bulletSections[0].indexOf('--') > -1 || bulletSections[0].indexOf('...') > -1) {
@@ -277,16 +277,22 @@
 
 				}
 				
+				
 				// checks that each section starts with a past tense verb
+				var pastTense = true;
+				var sectionIndex = 0;
+				
 				bulletSections.forEach(function(section, index){
+					if (pastTense == false) {
+						return;
+					}
 					section = section.trim();
 					var firstWord = section.split(' ')[0];
 					if(!isVerb(firstWord)){
-						var pastTense = false;
+						pastTense = false;
+						sectionIndex = index;
 					}
-				});
-
-				
+				});				
 				
 				// lengthens -ed endings in the event of multiple evaluations in a row
 				bulletNew = lengthenEndings(bulletNew);
@@ -295,20 +301,17 @@
 
 				// unabbreviate first word in each section of the bullet so it will be recognized as a past tense verb
 				bulletNew = unabbreviate(bulletNew);
-				//console.log(bulletNew);
-
-				// actual evaluation starts here
 				
 				
 				
-				//REDO******
+				//If the sections aren't seperated by the proper delimiters, the application will throw an error
 				if (sectionError == true) {
 					throw new Error('Section #1 and #2 must be seperated by a semicolon and section #2 and #3 by an elipses or double-dash');
 				}
 				
 				// throws error if the first word in each section was previously determined to not be a past tense verb
-				if (pastTense = false) {
-					throw new Error('Each bullet section must start with a PAST TENSE VERB. The first word in Section #' + (index + 1) + ' was not recognized.');
+				if (pastTense == false) {
+					throw new Error('Each bullet section must start with a PAST TENSE VERB. The first word in Section #' + (sectionIndex + 1) + ' was not recognized.');
 				}
 				
 				$('#error').text('Good job!');
@@ -318,9 +321,10 @@
 				var wordArray = bulletNew.split(' ');
 				//var wordArray = bulletNew.split(/(?:" "|\/)/);
 				for (i = 0; i < wordArray.length; i++) {
-					//if(isVerb(wordArray[i])) {
-					if(wordArray[i].length > 3){
-						wordArray[i] = wordArray[i].replace(/ed\b/gi, '\'d');
+					if(isVerb(wordArray[i])) {
+						if(wordArray[i].length > 3){
+							wordArray[i] = wordArray[i].replace(/ed\b/gi, '\'d');
+						}
 					}
 				}
 				
@@ -359,6 +363,9 @@
 				});
 			}
 			console.log(bullet);*/
+			
+			
+			
 			if(abbrevs.length > 0) {
 				// replace abbreviations w/ whole words
 				abbrevs.forEach(function(abbreviation) {
