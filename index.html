@@ -254,13 +254,20 @@
 				
 				// check for presence of 2 delimiters
 				
-				var bulletSections = bulletNew.split(/;/);
+				// lengthens -ed endings in the event of multiple evaluations in a row
+				var bulletTemp = lengthenEndings(bulletNew);
+			
+				// unabbreviates bullet if its been abbreviated already (for the sake of making sure the first word in each section will be recognized as a valid word)
+
+				// unabbreviate first word in each section of the bullet so it will be recognized as a past tense verb
+				bulletTemp = unabbreviate(bulletTemp);
+				
+				var bulletSections = bulletTemp.split(/;/);
 				var sectionError;
 				
 				if (bulletSections.length === 2) {
 					if (bulletSections[0].indexOf('--') > -1 || bulletSections[0].indexOf('...') > -1) {
 						sectionError = true;
-						//
 					} else if (bulletSections[1].indexOf('--') > -1 || bulletSections[1].indexOf('...') > -1) {
 						bulletSections = bulletSections.concat(bulletSections[1].split(/(?:--|\.\.\.)/gi));
 						bulletSections.splice(1, 1);
@@ -294,23 +301,23 @@
 					}
 				});				
 				
-				// lengthens -ed endings in the event of multiple evaluations in a row
+				/*// lengthens -ed endings in the event of multiple evaluations in a row
 				bulletNew = lengthenEndings(bulletNew);
 			
 				// unabbreviates bullet if its been abbreviated already (for the sake of making sure the first word in each section will be recognized as a valid word)
 
 				// unabbreviate first word in each section of the bullet so it will be recognized as a past tense verb
-				bulletNew = unabbreviate(bulletNew);
+				bulletNew = unabbreviate(bulletNew);*/
 				
 				
 				
 				//If the sections aren't seperated by the proper delimiters, the application will throw an error
-				if (sectionError == true) {
+				if (sectionError === true) {
 					throw new Error('Section #1 and #2 must be seperated by a semicolon and section #2 and #3 by an elipses or double-dash');
 				}
 				
 				// throws error if the first word in each section was previously determined to not be a past tense verb
-				if (pastTense == false) {
+				if (pastTense === false) {
 					throw new Error('Each bullet section must start with a PAST TENSE VERB. The first word in Section #' + (sectionIndex + 1) + ' was not recognized.');
 				}
 				
@@ -376,7 +383,7 @@
 						}
 					});
 				});
-				abbrevs = [];
+				//abbrevs = [];
 			}
 			else {
 				// try to figure out whats going on
