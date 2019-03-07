@@ -104,6 +104,7 @@
 		var lastSG,
 		min,
 		max;
+		var specAbbrevs = [];
 
 		// variables for reverse abbreviation
 		var caret,
@@ -244,7 +245,13 @@
 								}
 							});
 						});
+						
+						if(isVerb(word + 'd') && word.split('').reverse().join().indexOf('e') === 0 && sg[word].split('').reverse().join().indexOf('e') !== 0) {
+							console.log(word + 'd');
+							specAbbrevs.push(sg[word]);
+						}
 					}
+					
 					bulletNew = bulletNew.replace(new RegExp('\\b(?:' + word + ')', 'gi'), sg[word]);
 					bulletNew = bulletNew.replace(new RegExp('\\b(?:' + (word + 's') + ')', 'gi'), sg[word] + 's');
 				});
@@ -309,15 +316,17 @@
 				// unabbreviate first word in each section of the bullet so it will be recognized as a past tense verb
 				bulletNew = unabbreviate(bulletNew);*/
 				
-				
+				specAbbrevs.forEach(function(abbrev){
+					bulletNew = bulletNew.replace(new RegExp('\\b(?:' + abbrev + ')', 'gi'), abbrev + '\'');
+				});
 				
 				//If the sections aren't seperated by the proper delimiters, the application will throw an error
-				if (sectionError === true) {
+				if(sectionError === true) {
 					throw new Error('Section #1 and #2 must be seperated by a semicolon and section #2 and #3 by an elipses or double-dash');
 				}
 				
 				// throws error if the first word in each section was previously determined to not be a past tense verb
-				if (pastTense === false) {
+				if(pastTense === false) {
 					throw new Error('Each bullet section must start with a PAST TENSE VERB. The first word in Section #' + (sectionIndex + 1) + ' was not recognized.');
 				}
 				
@@ -371,7 +380,10 @@
 			}
 			console.log(bullet);*/
 			
-			
+			console.log(specAbbrevs);
+			specAbbrevs.forEach(function(abbrev){
+				bullet = bullet.replace(new RegExp('\\b(?:' + (abbrev +'\'') + ')', 'gi'), abbrev);
+			});
 			
 			if(abbrevs.length > 0) {
 				// replace abbreviations w/ whole words
