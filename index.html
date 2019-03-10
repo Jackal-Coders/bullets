@@ -267,7 +267,8 @@
 				// unabbreviates bullet if its been abbreviated already (for the sake of making sure the first word in each section will be recognized as a valid word)
 
 				// unabbreviate first word in each section of the bullet so it will be recognized as a past tense verb
-				bulletTemp = unabbreviate(bulletTemp);
+				//bulletTemp = unabbreviate(bulletTemp);
+				//console.log(bulletTemp);
 				
 				var bulletSections = bulletTemp.split(/;/);
 				var sectionError;
@@ -365,21 +366,6 @@
 
 		// unabbreviates all words in a string according to a study guide
 		function unabbreviate(bullet){
-			/*if(lastSG !== undefined){
-				console.log(lastSG);
-
-				// loops through studyGuide replacing all abbreviations w/ their respective words
-				var styleGuideArray = Object.entries(lastSG);
-				styleGuideArray.forEach(function(styleGuideEntry) {
-					//bullet = bullet.replace(new RegExp('\\b(?:' + styleGuideEntry[1] + ')\\b', 'gi'), styleGuideEntry[0]);
-					//bullet = bullet.replace(new RegExp('\\b(?:' + (styleGuideEntry[1] + 's') + ')\\b', 'gi'), styleGuideEntry[0] + 's');
-					if(styleGuideEntry[1].length > 1){
-						bullet = bullet.replace(new RegExp(styleGuideEntry[1], 'g'), styleGuideEntry[0]);
-					}
-				});
-			}
-			console.log(bullet);*/
-			
 			console.log(specAbbrevs);
 			specAbbrevs.forEach(function(abbrev){
 				bullet = bullet.replace(new RegExp('\\b(?:' + (abbrev +'\'') + ')', 'gi'), abbrev);
@@ -392,6 +378,7 @@
 					abbrevs.forEach(function(abbrev) {
 						if(abbrev.index > abbreviation.index){
 							abbrev.index += (abbreviation.word.length - abbreviation.abbrev.length);
+							console.log('it got here. ' + abbrev.abbrev);
 						}
 					});
 				});
