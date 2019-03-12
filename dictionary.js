@@ -2862,6 +2862,7 @@
 	"cooler": "coolers",
 	"coolie": "coolies",
 	"coop": ["coops", "cooping", "cooped"],
+	"coordinate": ["coordinates", "coordinating", "coordinated"],
 	"coot": "coots",
 	"cop": ["cops", "copping", "copped"],
 	"cop-out": "cop-outs",
