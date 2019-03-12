@@ -118,6 +118,7 @@ Feel free to copy the bullets from the bottom of the page…</p>
 		length;
 		var abbrevs = [];
 		var lastLength = 0;
+
 		
 		// notifies the user if their bullet is the proper length (within a min and max)
 		function updateLengthCheck(){
@@ -177,13 +178,7 @@ Feel free to copy the bullets from the bottom of the page…</p>
 		});
 
 		// code that runs every time a key is pressed runs here
-		myText.on("keyup", function(){
-
-			// updates the character counter element to reflect the new length of the bullet
-			characters = myText.val();
-			wordCount.text(characters.length);
-			updateLengthCheck();
-		});
+		myText.on("keyup", characterCount);
 
 		// code that runs when the evaluate button is pressed goes here
 		// this includes replacing words with abbreviations, checking that delimiters are present, etc
@@ -219,9 +214,16 @@ Feel free to copy the bullets from the bottom of the page…</p>
 
 					// sets the last study guide to 480th ISRW for unabbreviation purposes later
 					lastSG = wingStyleGuide;
+
 				} else {
 					throw new Error('Select style guide.');
 				}
+				sGArray.forEach(function(sGEntry) {
+					bulletNew = bulletNew.replace(new RegExp('\\b(?:' + sGEntry[0] + ')\\b', 'gi'), sGEntry[1]);
+					bulletNew = bulletNew.replace(new RegExp('\\b(?:' + (sGEntry[0] + 's') + ')\\b', 'gi'), sGEntry[1] + 's');
+				});
+				characterCount();
+				myText.val(bulletNew);
 				
 				// loops through all words w/ abbreviations in the style guide
 				// loops in reverse order to prevent unintended replacements of short words
@@ -334,6 +336,7 @@ Feel free to copy the bullets from the bottom of the page…</p>
 				// throws error if the first word in each section was previously determined to not be a past tense verb
 				if(pastTense === false) {
 					throw new Error('Each bullet section must start with a PAST TENSE VERB. The first word in Section #' + (sectionIndex + 1) + ' was not recognized.');
+
 				}
 				
 				$('#error').text('Good job!');
@@ -486,5 +489,6 @@ Feel free to copy the bullets from the bottom of the page…</p>
 			bullet = unabbreviate(bullet);
 			myText.val(bullet);
 		});
+
 	});
 </script>
