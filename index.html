@@ -136,6 +136,11 @@ Feel free to copy the bullets from the bottom of the page…</p>
 			}
 		}
 
+		function updateCharCount(){
+			characters = myText.val();
+			wordCount.text(characters.length);
+		}
+
 		// uses dictionary to determine if a word is a past tense verb or not
 		function isVerb(word){
 			var verb = false;
@@ -178,7 +183,12 @@ Feel free to copy the bullets from the bottom of the page…</p>
 		});
 
 		// code that runs every time a key is pressed runs here
-		myText.on("keyup", characterCount);
+		myText.on("keyup", function(){
+
+			// updates the character counter element to reflect the new length of the bullet
+			updateCharCount();
+			updateLengthCheck();
+		});
 
 		// code that runs when the evaluate button is pressed goes here
 		// this includes replacing words with abbreviations, checking that delimiters are present, etc
@@ -218,12 +228,6 @@ Feel free to copy the bullets from the bottom of the page…</p>
 				} else {
 					throw new Error('Select style guide.');
 				}
-				sGArray.forEach(function(sGEntry) {
-					bulletNew = bulletNew.replace(new RegExp('\\b(?:' + sGEntry[0] + ')\\b', 'gi'), sGEntry[1]);
-					bulletNew = bulletNew.replace(new RegExp('\\b(?:' + (sGEntry[0] + 's') + ')\\b', 'gi'), sGEntry[1] + 's');
-				});
-				characterCount();
-				myText.val(bulletNew);
 				
 				// loops through all words w/ abbreviations in the style guide
 				// loops in reverse order to prevent unintended replacements of short words
@@ -360,6 +364,9 @@ Feel free to copy the bullets from the bottom of the page…</p>
 				$('#error').text(error.message);
 				$('#error').css('color', 'red');
 			}
+
+			updateCharCount();
+			updateLengthCheck();
 		});
 		
 		$("#submitButton").click(function(){	
