@@ -106,7 +106,7 @@ var alsSG = {
     "construction":"const",
     "construct":"const",
     "continue":"cont",
-    "contract":"",
+    "contract":"contr",
     "contractor":"contr",
     "control":"ctrl",
     "coordinate":"coord",
